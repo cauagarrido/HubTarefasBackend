@@ -1,13 +1,14 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { env } from './env';
-import { Database } from '../types/database.types';
 
-let supabaseClient: SupabaseClient<Database> | null = null;
-let supabaseAdminClient: SupabaseClient<Database> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let supabaseClient: SupabaseClient<any> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let supabaseAdminClient: SupabaseClient<any> | null = null;
 
 if (env.isSupabaseConfigured) {
   try {
-    supabaseClient = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    supabaseClient = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
@@ -15,7 +16,7 @@ if (env.isSupabaseConfigured) {
     });
 
     if (env.SUPABASE_SERVICE_ROLE_KEY && !env.SUPABASE_SERVICE_ROLE_KEY.includes('your-supabase')) {
-      supabaseAdminClient = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+      supabaseAdminClient = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
         auth: {
           persistSession: false,
           autoRefreshToken: false,
@@ -27,16 +28,18 @@ if (env.isSupabaseConfigured) {
   }
 } else {
   console.warn(
-    '⚠️ [Supabase] Credenciais não configuradas ou são placeholders no .env. Endpoints com fallback funcionarão normalmente.'
+    '⚠️ [Supabase] Credenciais não configuradas ou são placeholders no .env.'
   );
 }
 
 /**
- * Retorna o cliente Supabase anônimo (respeita RLS baseado no JWT da requisição)
+ * Retorna o cliente Supabase anônimo
  */
-export const getSupabase = (): SupabaseClient<Database> | null => supabaseClient;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getSupabase = (): SupabaseClient<any> | null => supabaseClient;
 
 /**
- * Retorna o cliente Supabase administrativo com Service Role (ignora RLS quando necessário no backend)
+ * Retorna o cliente Supabase administrativo com Service Role
  */
-export const getSupabaseAdmin = (): SupabaseClient<Database> | null => supabaseAdminClient || supabaseClient;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getSupabaseAdmin = (): SupabaseClient<any> | null => supabaseAdminClient || supabaseClient;

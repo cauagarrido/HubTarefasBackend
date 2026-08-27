@@ -1,4 +1,4 @@
-import { Database } from './database.types';
+import { Database, UserRole } from './database.types';
 
 export * from './database.types';
 
@@ -60,6 +60,68 @@ export interface PublicHubPreview {
   inviteCode: string;
   memberCount: number;
   createdAt: string;
+  owner: {
+    id: string;
+    fullName: string;
+    avatarUrl: string | null;
+  };
+}
+
+// ==========================================
+// DTOs & Auth Types
+// ==========================================
+
+export interface RegisterDTO {
+  email: string;
+  password: string;
+  fullName: string;
+  avatarUrl?: string;
+}
+
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
+
+export interface AuthSessionData {
+  accessToken: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  tokenType?: string;
+}
+
+export interface AuthUserResponse {
+  user: {
+    id: string;
+    email: string;
+    fullName: string;
+    avatarUrl: string | null;
+    themePreference?: string;
+    accentColor?: string;
+    createdAt?: string;
+  };
+  session?: AuthSessionData | null;
+}
+
+export interface CreateHubDTO {
+  name: string;
+  description?: string;
+}
+
+export interface JoinHubDTO {
+  inviteCode: string;
+}
+
+export interface UserHubSummary {
+  id: string;
+  name: string;
+  description: string | null;
+  inviteCode: string;
+  role: UserRole;
+  isOwner: boolean;
+  memberCount: number;
+  createdAt: string;
+  updatedAt: string;
   owner: {
     id: string;
     fullName: string;

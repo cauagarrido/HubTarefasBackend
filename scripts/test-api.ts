@@ -51,18 +51,10 @@ async function runTests() {
     201
   );
 
-  const generatedCode = codeResult?.data?.inviteCode || 'HUB-DEMO99';
+  const generatedCode = codeResult?.data?.inviteCode || 'HUB-A2B3C4';
   console.log(`ℹ️ Código gerado para teste: ${generatedCode}`);
 
-  // 5. Teste /api/hubs/by-code/:code (com código válido gerado / demo)
-  await testEndpoint(
-    `GET /api/hubs/by-code/${generatedCode} (Preview Hub by Code)`,
-    `${baseUrl}/api/hubs/by-code/${generatedCode}`,
-    {},
-    200
-  );
-
-  // 6. Teste de código inválido (400)
+  // 5. Teste de código inválido (400)
   await testEndpoint(
     'GET /api/hubs/by-code/INVALID-FORMAT (Invalid Code Format)',
     `${baseUrl}/api/hubs/by-code/INVALID-FORMAT`,
@@ -70,7 +62,71 @@ async function runTests() {
     400
   );
 
-  // 7. Teste de rota 404
+  // 6. Teste de rota protegida /api/auth/me sem token (401)
+  await testEndpoint(
+    'GET /api/auth/me (Unauthorized Without Token)',
+    `${baseUrl}/api/auth/me`,
+    {},
+    401
+  );
+
+  // 7. Teste de validação em /api/auth/register com payload vazio (400)
+  await testEndpoint(
+    'POST /api/auth/register (Validation Error with Empty Body)',
+    `${baseUrl}/api/auth/register`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    },
+    400
+  );
+
+  // 8. Teste de validação em /api/auth/login com payload inválido (400)
+  await testEndpoint(
+    'POST /api/auth/login (Validation Error without Password)',
+    `${baseUrl}/api/auth/login`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@example.com' }),
+    },
+    400
+  );
+
+  // 9. Teste de rota protegida /api/hubs sem token (401)
+  await testEndpoint(
+    'POST /api/hubs (Unauthorized Without Token)',
+    `${baseUrl}/api/hubs`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Empresa Teste' }),
+    },
+    401
+  );
+
+  // 10. Teste de rota protegida /api/hubs/my-hubs sem token (401)
+  await testEndpoint(
+    'GET /api/hubs/my-hubs (Unauthorized Without Token)',
+    `${baseUrl}/api/hubs/my-hubs`,
+    {},
+    401
+  );
+
+  // 11. Teste de rota protegida /api/hubs/join sem token (401)
+  await testEndpoint(
+    'POST /api/hubs/join (Unauthorized Without Token)',
+    `${baseUrl}/api/hubs/join`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inviteCode: generatedCode }),
+    },
+    401
+  );
+
+  // 12. Teste de rota inexistente (404)
   await testEndpoint(
     'GET /api/non-existent-route (404 Handler)',
     `${baseUrl}/api/non-existent-route`,

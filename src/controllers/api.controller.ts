@@ -19,7 +19,22 @@ export class ApiController {
         {
           method: 'GET',
           path: '/api',
-          description: 'Retorna status da API, versão e lista de endpoints disponíveis',
+          description: 'Retorna status da API, versão e catálogo de endpoints',
+        },
+        {
+          method: 'POST',
+          path: '/api/auth/register',
+          description: 'Cadastra um novo usuário no Supabase Auth e tabela profiles',
+        },
+        {
+          method: 'POST',
+          path: '/api/auth/login',
+          description: 'Autentica o usuário com e-mail/senha e retorna o token de sessão JWT',
+        },
+        {
+          method: 'GET',
+          path: '/api/auth/me',
+          description: 'Retorna o perfil do usuário autenticado atual (Bearer Token)',
         },
         {
           method: 'GET',
@@ -35,6 +50,21 @@ export class ApiController {
           method: 'GET',
           path: '/api/hubs/by-code/:code',
           description: 'Busca informações públicas básicas de um Hub pelo seu código de convite para pré-visualização',
+        },
+        {
+          method: 'POST',
+          path: '/api/hubs',
+          description: 'Cria um novo Grupo Empresarial (Hub) com colunas Kanban e associa o usuário como Administrador',
+        },
+        {
+          method: 'GET',
+          path: '/api/hubs/my-hubs',
+          description: 'Lista todos os Grupos Empresariais dos quais o usuário autenticado participa ou é proprietário',
+        },
+        {
+          method: 'POST',
+          path: '/api/hubs/join',
+          description: 'Permite ao usuário autenticado ingressar em um Grupo Empresarial via código de convite',
         },
       ],
     };
